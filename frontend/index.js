@@ -1,3 +1,7 @@
-import { greet } from './emulator/gameboy_emulator';
+import { init, stop } from './emulator/gameboy_emulator';
 
-greet();
+init();
+
+setTimeout(() => {
+    stop();
+}, 5000)
