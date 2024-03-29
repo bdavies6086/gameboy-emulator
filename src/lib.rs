@@ -1,15 +1,14 @@
 mod utils;
 mod rom;
+mod cpu;
 
 extern crate console_error_panic_hook;
+extern crate once_cell;
 
 use wasm_bindgen::prelude::*;
-use std::str;
-use rom::*;
-use utils::set_panic_hook;
+use once_cell::{sync::OnceCell, *};
 
-static mut HALT: bool = false;
-
+static mut CPU: OnceCell<cpu::CPU> = OnceCell::new();
 
 #[wasm_bindgen]
 extern "C" {
@@ -19,25 +18,20 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn init() {
-    set_panic_hook();
-    let cb = rom::initialise_rom();
-
-    let s = cb(1).to_string();
-    
-    log(&s);
-
-    let a = cb(0).to_string();
-
-    log(&a);
-    alert("hi");
+pub unsafe fn init() {
+    CPU.set(cpu::CPU::new());
 }
 
 #[wasm_bindgen]
-pub fn stop() {
+pub fn tick() {
     unsafe {
-        HALT = true;
+        match CPU.get_mut() {
+            None => panic!("shouldnt be here"),
+            Some(cpu) => cpu.tick()
+        }
     }
-    
-    alert("ive been stopped");
+}
+
+#[wasm_bindgen]
+pub unsafe fn stop() {
 }
