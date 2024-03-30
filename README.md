@@ -28,3 +28,5 @@ wasm-pack test --headless --firefox
 ```
 wasm-pack publish
 ```
+
+This project is purely for a hobby and is not intended to be profited from.
